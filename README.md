@@ -136,11 +136,7 @@ C语言程序例程位于tests\example目录里。
 
 下面以simple程序为例进行说明。
 
-首先打开CMD窗口，进入到tests\example\simple目录，执行以下命令清除旧的目标文件：
-
-`make clean`
-
-然后重新编译：
+打开CMD窗口，进入到tests\example\simple目录，执行以下命令编译：
 
 `make`
 
