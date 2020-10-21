@@ -2,3 +2,6 @@
 *.o
 *.ko
 *.obj
+simple.bin
+simple.dump
+simple
