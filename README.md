@@ -129,7 +129,12 @@ make install
 
 `sudo apt-get install gtkwave`
 
-**注意：**如果使用其他版本的GNU工具链，可以自行修改tests/example/common.mk文件里的这几行内容：
+7. 安装GNU工具链
+
+可以从百度网盘下载(链接：https://pan.baidu.com/s/10uLZYf_cgtH94kZI_N6JhQ 
+提取码：uk0w)或者自行下载其他版本的，下载后解压到tools目录下。
+
+最后，需要确认tests/example/common.mk文件里的这几行内容要与你安装的工具链对应得上。
 
 ![toolchain](./pic/toolchain.png)
 
@@ -198,7 +203,7 @@ C语言程序例程位于tests\example目录里。
 
 # 7.更新记录
 
-2020-10-25：支持Linux平台；
+2020-10-25：支持Linux平台。新建bram分支，使用BRAM代替LUTRAM(DRAM)，节省一半以上LUT资源，并且可以运行更大的程序。
 
 2020-07-04：支持通过UART烧写固件；
 
