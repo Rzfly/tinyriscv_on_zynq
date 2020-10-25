@@ -32,7 +32,7 @@
 
 **tests**：该目录包含测试程序源码，其中example目录为C语言程序例程源码，isa目录为RV32指令测试源码；
 
-**tools**：该目录包含编译汇编和C语言程序所需GNU工具链和将二进制文件转成仿真所需的mem格式文件的工具BinToMem，还有通过串口下载程序的脚本。BinToMem\_CLI.exe需要在cmd窗口下执行，BinToMem\_GUI.exe提供图形界面，双击即可运行；
+**tools**：该目录包含编译汇编和C语言程序所需GNU工具链和将二进制文件转成仿真所需的mem格式文件的脚本，还有通过串口下载程序的脚本。
 
 **pic**：存放图片；
 
@@ -54,7 +54,7 @@ tinyriscv目前外挂了6个外设，每个外设的空间大小为256MB，地�
 
 ![tinyriscv跑分](./pic/tinyriscv_coremark.png)
 
-可知，tinyriscv的跑分成绩为2.4。此成绩是基于指令在rom存储和数据在ram存储的情况下得出的，如果指令和数据都在ram的话跑分上3.0问题应该不大。
+可知，tinyriscv的跑分成绩为2.4。
 
 选了几款其他MCU的跑分结果如下图所示：
 
@@ -64,9 +64,9 @@ tinyriscv目前外挂了6个外设，每个外设的空间大小为256MB，地�
 
 # 4.如何使用
 
-本项目运行在windows平台，编译仿真工具使用的是iverilog和vpp，波形查看工具使用的是gtkwave。
+本项目可以运行在Windows和Linux平台(macOS平台理论上也是可以的)，编译仿真工具使用的是iverilog和vpp，波形查看工具使用的是gtkwave。
 
-## 4.1安装环境
+## 4.1Windows平台环境搭建
 
 在使用之前需要安装以下工具：
 
@@ -88,15 +88,56 @@ tinyriscv目前外挂了6个外设，每个外设的空间大小为256MB，地�
 
 到[python官网](https://www.python.org/)下载win版本的python，注意要下载python3版本的。网速慢的同学可以通过百度网盘下载(链接: https://pan.baidu.com/s/1gNC8L5dZTsN6E5TJD2rmnQ 提取码: 3b4t)，或者通过微云下载[https://share.weiyun.com/XwzSQHND](https://share.weiyun.com/XwzSQHND)。安装完后将python添加到环境变量里。
 
-5. 下载代码
+5. 下载tinyriscv代码
 
-使用git clone命令下载，不要使用zip方式下载，否则有些文件会有格式问题。
+**使用git clone命令下载，不要使用zip方式下载**，否则有些文件会有格式问题。
 
 `git clone https://gitee.com/liangkangnan/tinyriscv.git`
 
-## 4.2运行指令测试程序
+## 4.2Linux平台环境搭建
 
-### 4.2.1 运行旧的指令测试程序
+这里以Ubuntu系统为例进行说明。
+
+1. 下载iverilog源码
+
+`git clone https://github.com/steveicarus/iverilog.git`
+
+2. 切换到v11分支(必须用V11或以上的版本)
+
+`git checkout v11-branch`
+
+3. 安装依赖
+
+`sudo apt-get install autoconf gperf flex bison build-essential`
+
+4. 编译、安装iverilog和vvp
+
+```
+sh autoconf.sh
+./configure
+make
+make install
+```
+
+5. 创建python软链接
+
+`sudo ln -s /usr/bin/python3.8 /usr/bin/python`
+
+其中/usr/bin/python3.8对应你实际安装的python版本。
+
+6. 安装gtkwave
+
+`sudo apt-get install gtkwave`
+
+**注意：**如果使用其他版本的GNU工具链，可以自行修改tests/example/common.mk文件里的这几行内容：
+
+![toolchain](./pic/toolchain.png)
+
+## 4.3运行指令测试程序
+
+这里以Windows平台为例进行说明，Linux平台是类似的。
+
+### 4.3.1 运行旧的指令测试程序
 
 旧的指令测试程序属于比较早的指令兼容性测试方法，虽然目前RISC-V官方已经不更新了，但仍然是一个比较好的测试参考。
 
@@ -104,7 +145,7 @@ tinyriscv目前外挂了6个外设，每个外设的空间大小为256MB，地�
 
 打开CMD窗口，进入到sim目录，执行以下命令：
 
-```sim_new_nowave.bat ..\tests\isa\generated\rv32ui-p-add.bin inst.data```
+```python .\sim_new_nowave.py ..\tests\isa\generated\rv32ui-p-add.bin inst.data```
 
 如果运行成功的话就可以看到&quot;PASS&quot;的打印。其他指令使用方法类似。
 
@@ -116,7 +157,7 @@ tinyriscv目前外挂了6个外设，每个外设的空间大小为256MB，地�
 
 `python .\test_all_isa.py`
 
-### 4.2.2运行新的指令测试程序
+### 4.3.2运行新的指令测试程序
 
 新的指令兼容性([riscv-compliance](https://github.com/riscv/riscv-compliance))测试项相对于旧的指令兼容性测试项来说对指令的测试更加严谨，可以精确到每一条指令的运行结果，而且RISC-V官方一直在更新。
 
@@ -124,13 +165,13 @@ tinyriscv目前外挂了6个外设，每个外设的空间大小为256MB，地�
 
 打开CMD窗口，进入到sim/compliance_test目录，执行以下命令：
 
-`python compliance_test.py ..\..\tests\riscv-compliance\build_generated\rv32i\I-ADD-01.elf.bin inst.data`
+`python .\compliance_test.py ..\..\tests\riscv-compliance\build_generated\rv32i\I-ADD-01.elf.bin inst.data`
 
 如果运行成功的话就可以看到&quot;PASS&quot;的打印。其他指令使用方法类似。
 
 ![new_test_output](./pic/new_test_output.png)
 
-## 4.3运行C语言程序
+## 4.4运行C语言程序
 
 C语言程序例程位于tests\example目录里。
 
@@ -142,7 +183,7 @@ C语言程序例程位于tests\example目录里。
 
 编译成功之后，进入到sim目录，执行以下命令开始测试：
 
-` .\sim_new_nowave.bat ..\tests\example\simple\simple.bin inst.data`
+` python .\sim_new_nowave.py ..\tests\example\simple\simple.bin inst.data`
 
 # 5.移植到FPGA
 
@@ -156,6 +197,8 @@ C语言程序例程位于tests\example目录里。
 4. ......
 
 # 7.更新记录
+
+2020-10-25：支持Linux平台；
 
 2020-07-04：支持通过UART烧写固件；
 
